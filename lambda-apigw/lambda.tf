@@ -89,7 +89,8 @@ resource "aws_lambda_function" "test_lambda" {
 
   environment {
     variables = {
-      s3_bucket = split(":", aws_s3_bucket.website_bucket.arn)[5]
+      s3_bucket = var.website_bucket
+      # split(":", website_bucket.arn)[5]
     }
   }
 

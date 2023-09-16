@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     # object.put(Body=jsondata, Metadata={'Content-Type': 'application/json'})
     object = s3.Object(os.environ['s3_bucket'], 'index.html')
     # x="<!DOCTYPE html><html><body>"
-    object.put(Body=jsondata, ContentType='text/html') #Metadata={'Content-Type': 'text/html'})
+    object.put(Body=jsondata, ContentType='text/html', ACL = 'public-read') #Metadata={'Content-Type': 'text/html'})
 
     logger.info(f"Output is {jsondata}")
 

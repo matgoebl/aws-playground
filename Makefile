@@ -1,15 +1,12 @@
-export AWS_ACCESS_KEY_ID=$(shell cat ../.playground.key)
-export AWS_SECRET_ACCESS_KEY=$(shell cat ../.playground.secret)
-export AWS_REGION=$(shell cat ../.playground.region)
+export AWS_ACCESS_KEY_ID=$(shell cat ./.playground.key)
+export AWS_SECRET_ACCESS_KEY=$(shell cat ./.playground.secret)
+export AWS_REGION=$(shell cat ./.playground.region)
 export TF_VAR_region=$(AWS_REGION)
-
-export LAMBDA_NAME=page_updater
-export TF_VAR_lambda_name=$(LAMBDA_NAME)
 
 TERRAFORM=terraform
 PLAN=out.tfplan
 
-all:	init plan apply call
+all:	init plan apply curl
 
 install: plan
 	$(TERRAFORM) apply $(PLAN)
@@ -32,6 +29,15 @@ destroy:
 clean: destroy
 
 
+curl:
+	curl -i "$(shell $(TERRAFORM) output -raw website_url)"
+
+
+
+export LAMBDA_NAME=page_updater
+export TF_VAR_lambda_name=$(LAMBDA_NAME)
+
+
 call:
 	aws lambda invoke --function-name $(LAMBDA_NAME) --cli-binary-format raw-in-base64-out --payload '{"action": "do_something","arguments": [1,2,3]}' --no-cli-pager tmp.txt
 	@echo ---; cat tmp.txt; echo
@@ -49,4 +55,5 @@ get:
 sh:
 	-@bash
 
-.PHONY: all install init plan apply destroy clean call logs tail get sh
+
+.PHONY: all install init plan apply destroy clean curl call logs tail get sh

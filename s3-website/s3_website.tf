@@ -1,7 +1,3 @@
-variable "website_prefix" {
-  type    = string
-  default = "website"
-}
 
 
 
@@ -112,5 +108,5 @@ resource "aws_s3_object" "website_content" {
 
   acl = "public-read"
 
-  depends_on = [aws_s3_bucket_public_access_block.website_bucket_access]
+  depends_on = [aws_s3_bucket_acl.website_bucket_acl]
 }

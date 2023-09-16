@@ -1,3 +1,4 @@
-variable "region" {
-  type = string
+variable "website_prefix" {
+  type    = string
+  default = "website"
 }

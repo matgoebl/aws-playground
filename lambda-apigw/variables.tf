@@ -1,4 +1,4 @@
-variable "region" {
+variable "website_bucket" {
   type = string
 }
 
@@ -11,4 +11,3 @@ variable "lambda_allowed_callers" {
   type    = list(string)
   default = []
 }
-
