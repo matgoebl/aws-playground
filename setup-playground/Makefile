@@ -22,3 +22,5 @@ destroy:
 	rm -rf $(PLAN)
 
 clean: destroy
+
+.PHONY: all install init plan apply destroy clean

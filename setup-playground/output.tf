@@ -12,6 +12,10 @@ resource "local_file" "playground_region" {
 
 ### Save credentials for playground user with limited permissions
 
+output "playground_user" {
+  value = aws_iam_user.playground.arn
+}
+
 output "playground_access_key" {
   value = aws_iam_access_key.playground.id
 }
@@ -19,6 +23,11 @@ output "playground_access_key" {
 output "playground_secret_key" {
   value     = aws_iam_access_key.playground.secret
   sensitive = true
+}
+
+resource "local_file" "playground_user" {
+  content  = aws_iam_user.playground.arn
+  filename = "${path.module}/../.playground.user"
 }
 
 resource "local_file" "playground_access_key" {

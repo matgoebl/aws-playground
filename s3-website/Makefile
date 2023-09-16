@@ -31,3 +31,5 @@ clean: destroy
 
 curl:
 	curl -i "$(shell $(TERRAFORM) output -raw website_url)"
+
+.PHONY: all install init plan apply destroy clean curl

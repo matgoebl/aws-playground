@@ -35,14 +35,31 @@ data "aws_iam_policy_document" "playground_policy" {
     effect = "Allow"
 
     actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      # "logs:CreateLogStream",
+      # "logs:PutLogEvents",
+      "logs:*",
+      "lambda:*",
+      "iam:PassRole"
     ]
 
     resources = [
-      "arn:aws:logs:*:*:*"
+      "*"
+      # "arn:aws:logs:*:*:*"
     ]
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+
+    resources = [
+      "arn:aws:iam::772603373501:role/playground_lambda_role"
+    ]
+  }
+
 }
 
 resource "aws_iam_user_policy" "playground" {
