@@ -12,6 +12,16 @@ terraform {
   required_version = "~>1.4"
 }
 
+data "terraform_remote_state" "playground_setup" {
+  backend = "local"
+
+  config = {
+    path = "./setup-playground/terraform.tfstate"
+  }
+}
+
 provider "aws" {
-  # region = var.region
+  region     = data.terraform_remote_state.playground_setup.outputs.region
+  access_key = data.terraform_remote_state.playground_setup.outputs.playground_access_key
+  secret_key = data.terraform_remote_state.playground_setup.outputs.playground_secret_key
 }

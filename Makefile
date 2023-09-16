@@ -1,7 +1,7 @@
-export AWS_ACCESS_KEY_ID=$(shell cat ./.playground.key)
-export AWS_SECRET_ACCESS_KEY=$(shell cat ./.playground.secret)
-export AWS_REGION=$(shell cat ./.playground.region)
-export TF_VAR_region=$(AWS_REGION)
+# export AWS_ACCESS_KEY_ID=$(shell cat ./.playground.key)
+# export AWS_SECRET_ACCESS_KEY=$(shell cat ./.playground.secret)
+# export AWS_REGION=$(shell cat ./.playground.region)
+# export TF_VAR_region=$(AWS_REGION)
 
 TERRAFORM=terraform
 PLAN=out.tfplan
