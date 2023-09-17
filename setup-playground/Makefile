@@ -1,7 +1,7 @@
 TERRAFORM=terraform
 PLAN=out.tfplan
 
-all:	init plan apply
+all:	init plan apply gh_update
 
 install: plan
 	$(TERRAFORM) apply $(PLAN)
@@ -28,5 +28,6 @@ gh_update:
 	gh secret set AWS_SECRET_ACCESS_KEY --body $(shell $(TERRAFORM) output -raw playground_secret_key)
 	gh variable set AWS_REGION --body $(shell $(TERRAFORM) output -raw playground_region)
 	gh variable set AWS_USER --body $(shell $(TERRAFORM) output -raw playground_user)
+	gh variable set AWS_GITHUB_ROLE --body $(shell $(TERRAFORM) output -raw playground_github_role)
 
 .PHONY: all install init plan apply destroy clean
