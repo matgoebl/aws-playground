@@ -20,6 +20,10 @@ output "playground_user" {
   value = aws_iam_user.playground.arn
 }
 
+output "playground_github_role" {
+  value = aws_iam_role.github_role.arn
+}
+
 output "playground_access_key" {
   value = aws_iam_access_key.playground.id
 }
