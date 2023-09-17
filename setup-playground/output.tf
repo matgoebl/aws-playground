@@ -12,6 +12,10 @@ resource "local_file" "playground_region" {
 
 ### Save credentials for playground user with limited permissions
 
+output "playground_region" {
+  value = var.region
+}
+
 output "playground_user" {
   value = aws_iam_user.playground.arn
 }
