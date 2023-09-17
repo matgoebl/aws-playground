@@ -1,0 +1,21 @@
+name: Connect to AWS
+on:
+  push
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+permissions:
+      id-token: write
+      contents: read
+jobs:
+  AWS-Connect:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name:  Show environment
+        run: env
+      - name:  Check AWS connectifity
+        run: |
+          aws sts get-caller-identity
