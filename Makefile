@@ -1,7 +1,8 @@
 export AWS_ACCESS_KEY_ID?=$(shell cat ./.playground.key)
 export AWS_SECRET_ACCESS_KEY?=$(shell cat ./.playground.secret)
 export AWS_REGION?=$(shell cat ./.playground.region)
-# export TF_VAR_region=$(AWS_REGION)
+export STATE_S3BUCKET?=$(shell cat ./.playground.state_s3bucket)
+export STATE_LOCK_DYNAMODB=$(STATE_S3BUCKET)-lock
 
 TERRAFORM=terraform
 PLAN=out.tfplan
@@ -11,7 +12,12 @@ all:	init plan ask apply curl
 install: init plan apply
 
 init:
-	$(TERRAFORM) init
+	$(TERRAFORM) init -reconfigure \
+	 -backend-config="bucket=$(STATE_S3BUCKET)" \
+	 -backend-config="key=$(STATE_S3BUCKET)-main" \
+	 -backend-config="dynamodb_table=$(STATE_LOCK_DYNAMODB)" \
+	 -backend-config="region=$(AWS_REGION)" \
+	 -backend-config="profile=$(AWS_PROFILE)"
 
 plan:
 	$(TERRAFORM) fmt
@@ -19,7 +25,7 @@ plan:
 	$(TERRAFORM) plan -out=$(PLAN)
 
 ask:
-	read -p 'OK? [Y/ctrl-c]'
+	read -p 'OK? [Y/ctrl-c]' dummy
 
 apply:
 	$(TERRAFORM) apply $(PLAN)
@@ -58,4 +64,4 @@ sh:
 	-@bash
 
 
-.PHONY: all install init plan apply destroy clean curl call logs tail get sh
+.PHONY: all install init plan ask apply destroy clean curl call logs tail get sh

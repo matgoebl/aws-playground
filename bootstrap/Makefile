@@ -2,8 +2,8 @@ export AWS_PROFILE=administrator
 export AWS_REGION=us-east-2
 
 #STATE_S3BUCKET:=playground-tfstate-$(shell uuidgen -t | cut -c1-8)
-export STATE_S3BUCKET:=$(shell gh repo view --json owner,name --jq '.owner.login + "-" + .name' )
-export STATE_LOCK_DYNAMODB=$(STATE_S3BUCKET)--state-lock
+export STATE_S3BUCKET:=$(shell gh repo view --json owner,name --jq '.owner.login + "-" + .name' )--state
+export STATE_LOCK_DYNAMODB=$(STATE_S3BUCKET)-lock
 export TF_VAR_profile=$(AWS_PROFILE)
 export TF_VAR_region=$(AWS_REGION)
 export TF_VAR_state_s3bucket=$(STATE_S3BUCKET)
@@ -28,7 +28,7 @@ init:
 
 	$(TERRAFORM) init \
 	 -backend-config="bucket=$(STATE_S3BUCKET)" \
-	 -backend-config="key=$(STATE_S3BUCKET)" \
+	 -backend-config="key=$(STATE_S3BUCKET)-bootstrap" \
 	 -backend-config="dynamodb_table=$(STATE_LOCK_DYNAMODB)" \
 	 -backend-config="region=$(AWS_REGION)" \
 	 -backend-config="profile=$(AWS_PROFILE)"
@@ -45,25 +45,35 @@ plan:
 	$(TERRAFORM) plan -out=$(PLAN)
 
 ask:
-	read -p 'OK? [Y/ctrl-c]'
+	read -p 'OK? [Y/ctrl-c]' dummy
 
 apply:
 	$(TERRAFORM) apply $(PLAN)
 
 destroy:
-	-$(TERRAFORM) destroy -auto-approve
+	$(TERRAFORM) destroy -auto-approve
 	rm -rf $(PLAN)
 	-aws s3 rb s3://$(STATE_S3BUCKET) --force 
 	-aws dynamodb delete-table --table-name $(STATE_LOCK_DYNAMODB)
+	# -gh secret delete AWS_ACCESS_KEY_ID
+	# -gh secret delete AWS_SECRET_ACCESS_KEY
+	-gh variable delete AWS_REGION
+	-gh variable delete AWS_USER
+	-gh variable delete AWS_GITHUB_ROLE
+	-gh variable delete STATE_S3BUCKET
 
 clean: destroy
 
 gh_update:
-	gh secret set AWS_ACCESS_KEY_ID --body $(shell $(TERRAFORM) output -raw playground_access_key)
-	gh secret set AWS_SECRET_ACCESS_KEY --body $(shell $(TERRAFORM) output -raw playground_secret_key)
+	# gh secret set AWS_ACCESS_KEY_ID --body $(shell $(TERRAFORM) output -raw playground_access_key)
+	# gh secret set AWS_SECRET_ACCESS_KEY --body $(shell $(TERRAFORM) output -raw playground_secret_key)
 	gh variable set AWS_REGION --body $(shell $(TERRAFORM) output -raw playground_region)
 	gh variable set AWS_USER --body $(shell $(TERRAFORM) output -raw playground_user)
 	gh variable set AWS_GITHUB_ROLE --body $(shell $(TERRAFORM) output -raw playground_github_role)
-	gh variable set AWS_S3BUCKET --body "$(STATE_S3BUCKET)"
+	gh variable set STATE_S3BUCKET --body "$(STATE_S3BUCKET)"
 
-.PHONY: all install init plan apply destroy clean
+sh:
+	-@bash
+
+
+.PHONY: all install init plan ask apply destroy clean gh_update sh
