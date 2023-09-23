@@ -40,6 +40,9 @@ clean: destroy
 curl:
 	curl -i "$(shell $(TERRAFORM) output -raw website_url)"
 
+summary:
+	@echo "### Deployment Result"
+	@echo "- $(shell $(TERRAFORM) output -raw website_url)"
 
 
 export LAMBDA_NAME=page_updater

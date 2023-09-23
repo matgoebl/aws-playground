@@ -35,3 +35,6 @@ jobs:
         run: |
           make install
 
+      - name: Create summary
+        run: |
+          make -s summary >> $GITHUB_STEP_SUMMARY
