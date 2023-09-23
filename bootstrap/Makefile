@@ -14,10 +14,9 @@ export PLAN=out.tfplan
 export AWS_PAGER=""
 export AWS_DEFAULT_OUTPUT=json
 
-all:	init plan apply gh_update
+all:	init plan ask apply gh_update
 
-install: plan
-	$(TERRAFORM) apply $(PLAN)
+install: init plan apply gh_update
 
 init:
 	@echo '*** Create AWS S3 Bucket and DynamoDB for holding the terraform remote state, if not already done...'
@@ -45,8 +44,11 @@ plan:
 	$(TERRAFORM) validate
 	$(TERRAFORM) plan -out=$(PLAN)
 
+ask:
+	read -p 'OK? [Y/ctrl-c]'
+
 apply:
-	$(TERRAFORM) apply
+	$(TERRAFORM) apply $(PLAN)
 
 destroy:
 	-$(TERRAFORM) destroy -auto-approve

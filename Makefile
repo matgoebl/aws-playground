@@ -6,10 +6,9 @@ export AWS_REGION?=$(shell cat ./.playground.region)
 TERRAFORM=terraform
 PLAN=out.tfplan
 
-all:	init plan apply curl
+all:	init plan ask apply curl
 
-install: plan
-	$(TERRAFORM) apply $(PLAN)
+install: init plan apply
 
 init:
 	$(TERRAFORM) init
@@ -19,8 +18,11 @@ plan:
 	$(TERRAFORM) validate
 	$(TERRAFORM) plan -out=$(PLAN)
 
+ask:
+	read -p 'OK? [Y/ctrl-c]'
+
 apply:
-	$(TERRAFORM) apply
+	$(TERRAFORM) apply $(PLAN)
 
 destroy:
 	$(TERRAFORM) destroy -auto-approve

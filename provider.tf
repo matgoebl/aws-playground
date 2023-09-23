@@ -15,7 +15,7 @@ terraform {
 # data "terraform_remote_state" "playground_setup" {
 #   backend = "local"
 #   config = {
-#     path = "./setup-playground/terraform.tfstate"
+#     path = "./bootstrap/terraform.tfstate"
 #   }
 # }
 

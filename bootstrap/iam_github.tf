@@ -43,23 +43,26 @@ resource "aws_iam_role" "github_role" {
 }
 
 
+# data "aws_iam_policy_document" "github_permissions" {
+#   statement {
+#     actions = [
+#       "s3:*"
+#     ]
+#     resources = ["*"]
+#   }
+# }
 
+# resource "aws_iam_policy" "github_permissions" {
+#   name   = "github-permissions"
+#   policy = data.aws_iam_policy_document.github_permissions.json
+# }
 
-data "aws_iam_policy_document" "github_permissions" {
-  statement {
-    actions = [
-      "s3:*"
-    ]
-    resources = ["*"]
-  }
-}
+# resource "aws_iam_role_policy_attachment" "github" {
+#   role       = aws_iam_role.github_role.name
+#   policy_arn = aws_iam_policy.github_permissions.arn
+# }
 
-resource "aws_iam_policy" "github_permissions" {
-  name   = "github-permissions"
-  policy = data.aws_iam_policy_document.github_permissions.json
-}
-
-resource "aws_iam_role_policy_attachment" "github" {
+resource "aws_iam_role_policy_attachment" "github_playground_policy_attachment" {
   role       = aws_iam_role.github_role.name
-  policy_arn = aws_iam_policy.github_permissions.arn
+  policy_arn = aws_iam_policy.playground_policy.arn
 }

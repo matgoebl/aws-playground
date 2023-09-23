@@ -39,6 +39,7 @@ data "aws_iam_policy_document" "playground_policy" {
       # "logs:PutLogEvents",
       "logs:*",
       "lambda:*",
+      "iam:GetRole",
       "iam:PassRole"
     ]
 
