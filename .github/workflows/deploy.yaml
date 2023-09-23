@@ -32,4 +32,5 @@ jobs:
 
       - name:  Run AWS deployment
         run: |
-          make install
+          make init install
+
