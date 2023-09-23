@@ -17,3 +17,7 @@ variable "lambda_name" {
   type    = string
   default = "lambda_function"
 }
+
+output "apigw_url" {
+  value = module.lambda_apigw.apigw_url
+}
