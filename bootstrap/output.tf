@@ -9,6 +9,15 @@ resource "local_file" "playground_region" {
   filename = "${path.module}/../.playground.region"
 }
 
+output "playground_state_s3bucket" {
+  value = aws_s3_bucket.state_s3bucket.id
+}
+
+resource "local_file" "playground_state_s3bucket" {
+  content  = aws_s3_bucket.state_s3bucket.id
+  filename = "${path.module}/../.playground.state_s3bucket"
+}
+
 
 ### Save credentials for playground user with limited permissions
 

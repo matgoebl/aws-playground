@@ -15,7 +15,7 @@ resource "random_id" "website_postfix" {
 
 resource "aws_s3_bucket" "website_bucket" {
   bucket        = local.website_bucket_name
-  force_destroy = true
+  # force_destroy = true
 }
 
 resource "aws_s3_bucket_ownership_controls" "website_bucket_owner" {
@@ -89,6 +89,7 @@ variable "mime_types" {
     js   = "application/javascript"
     map  = "application/javascript"
     json = "application/json"
+    yaml = "application/yaml"
     png  = "image/png"
     jpg  = "image/jpg"
     jpeg = "image/jpg"
@@ -104,7 +105,7 @@ resource "aws_s3_object" "website_content" {
   source   = "${local.website_dir}/${each.value}"
   etag     = filemd5("${local.website_dir}/${each.value}")
 
-  content_type = lookup(var.mime_types, split(".", each.value)[length(split(".", each.value)) - 1], "text/html")
+  content_type = lookup(var.mime_types, split(".", each.value)[length(split(".", each.value)) - 1], "text/plain")
 
   acl = "public-read"
 
