@@ -1,0 +1,18 @@
+{
+  "packages": [
+    "glibcLocalesUtf8@latest",
+    "tfswitch@latest",
+    "glow@latest",
+    "awscli2@latest",
+  ],
+  "shell": {
+    "init_hook": [
+      "true devbox shell",
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1",
+      ],
+    },
+  },
+}

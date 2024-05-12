@@ -11,6 +11,20 @@ all:	init plan ask apply curl
 
 install: init plan apply
 
+setup-devbox:
+	curl -sfSL https://direnv.net/install.sh | bash
+	curl -sfSL https://get.jetpack.io/devbox | bash
+	grep -q 'direnv hook bash' $(HOME)/.bashrc || echo 'eval "$$(direnv hook bash)"' >> $(HOME)/.bashrc
+	devbox install
+	direnv allow .
+
+setup-playground:
+	mkdir -p $SVS_WORKBENCH_HOME/.private/
+	-python3 -m pip install --upgrade pip setuptools wheel virtualenv
+	python3 -m virtualenv ./.venv/
+	. ./.venv/bin/activate && python3 -m pip install boto3
+	# . ./.venv/bin/activate && python3 -m pip freeze --all | grep -v pkg_resources==0.0.0 > requirements.txt
+
 init:
 	$(TERRAFORM) init -reconfigure \
 	 -backend-config="bucket=$(STATE_S3BUCKET)" \
