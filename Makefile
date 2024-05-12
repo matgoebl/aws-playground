@@ -6,10 +6,27 @@ export STATE_LOCK_DYNAMODB=$(STATE_S3BUCKET)-lock
 
 TERRAFORM=terraform
 PLAN=out.tfplan
+VENV=./.venv
 
 all:	init plan ask apply curl
 
 install: init plan apply
+
+setup-devbox:
+	curl -sfSL https://direnv.net/install.sh | bash
+	curl -sfSL https://get.jetpack.io/devbox | bash
+	grep -q 'direnv hook bash' $(HOME)/.bashrc || echo 'eval "$$(direnv hook bash)"' >> $(HOME)/.bashrc
+	devbox install
+	direnv allow .
+
+setup-playground:
+	mkdir -p $(AWS_PLAYGROUND_HOME)/.private/
+	if [ -z "$(VIRTUAL_ENV)" ]; then \
+	 python3 -m pip install --upgrade pip setuptools wheel virtualenv; \
+	 python3 -m virtualenv $(VENV); \
+	 . $(VENV)/bin/activate && python3 -m pip install boto3; \
+	fi
+	python3 -m pip install --upgrade brawser
 
 init:
 	$(TERRAFORM) init -reconfigure \
@@ -36,6 +53,12 @@ destroy:
 
 clean: destroy
 
+distclean:
+	rm -rf $(VENV) .devbox
+	find -iname "*.pyc" -delete 2>/dev/null || true
+	find -name __pycache__ -type d -exec rm -rf '{}' ';' 2>/dev/null || true
+	rm -rf .terraform/providers bootstrap/.terraform/providers
+	rm -rf .devbox
 
 curl:
 	curl -i "$(shell $(TERRAFORM) output -raw website_url)"

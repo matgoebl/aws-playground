@@ -1,0 +1,17 @@
+export AWS_PLAYGROUND_HOME="$PWD"
+
+export AWS_CONFIG_FILE=$AWS_PLAYGROUND_HOME/.aws-config
+export AWS_SHARED_CREDENTIALS_FILE=$AWS_PLAYGROUND_HOME/.aws-credentials
+export PATH=$AWS_PLAYGROUND_HOME/bin:$PATH
+export PIPENV_VENV_IN_PROJECT=1
+export PIPENV_VERBOSITY=-1
+
+if [ "$1" = "install" ]; then
+ make setup-devbox setup-playground
+fi
+
+[ -z "$VIRTUAL_ENV" ] && . ./.venv/bin/activate
+
+[ -r "$AWS_PLAYGROUND_HOME/.local.setenv" ] && . "$AWS_PLAYGROUND_HOME/.local.setenv"
+
+aws sts get-caller-identity --no-cli-pager --output=text || aws sso login
