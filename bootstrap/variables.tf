@@ -12,6 +12,10 @@ variable "state_s3bucket" {
   type = string
 }
 
+variable "state_keyalias" {
+  type = string
+}
+
 variable "state_dynamodb" {
   type = string
 }
